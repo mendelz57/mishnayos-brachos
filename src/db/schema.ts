@@ -121,3 +121,11 @@ export const quizAnswers = pgTable("quiz_answers", {
   studentAnswer: text("student_answer").notNull(),
   isCorrect: boolean("is_correct").notNull(),
 });
+
+export const passwordResets = pgTable("password_resets", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  token: text("token").notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  usedAt: timestamp("used_at"),
+});
