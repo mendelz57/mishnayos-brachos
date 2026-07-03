@@ -26,10 +26,10 @@ export async function POST(req: NextRequest) {
   const session = await requireAdmin();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { chapterId, number, title, hebrewText, englishSummary, youtubeVideoId, order } = await req.json();
+  const { chapterId, number, title, hebrewText, englishSummary, youtubeVideoId, pdfStartPage, order } = await req.json();
   const [mishnah] = await db
     .insert(mishnayos)
-    .values({ chapterId, number, title, hebrewText, englishSummary, youtubeVideoId, order })
+    .values({ chapterId, number, title, hebrewText, englishSummary, youtubeVideoId, pdfStartPage, order })
     .returning();
   return NextResponse.json(mishnah);
 }
@@ -38,10 +38,10 @@ export async function PUT(req: NextRequest) {
   const session = await requireAdmin();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { id, chapterId, number, title, hebrewText, englishSummary, youtubeVideoId, order } = await req.json();
+  const { id, chapterId, number, title, hebrewText, englishSummary, youtubeVideoId, pdfStartPage, order } = await req.json();
   const [mishnah] = await db
     .update(mishnayos)
-    .set({ chapterId, number, title, hebrewText, englishSummary, youtubeVideoId, order })
+    .set({ chapterId, number, title, hebrewText, englishSummary, youtubeVideoId, pdfStartPage, order })
     .where(eq(mishnayos.id, id))
     .returning();
   return NextResponse.json(mishnah);

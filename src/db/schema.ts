@@ -60,6 +60,7 @@ export const mishnayos = pgTable("mishnayos", {
   hebrewText: text("hebrew_text"),
   englishSummary: text("english_summary"),
   youtubeVideoId: text("youtube_video_id"),
+  pdfStartPage: integer("pdf_start_page"),
   order: integer("order").notNull(),
 });
 

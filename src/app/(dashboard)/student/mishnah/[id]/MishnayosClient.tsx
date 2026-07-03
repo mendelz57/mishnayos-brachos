@@ -19,11 +19,12 @@ type Props = {
   questions: Question[];
   studentId: number;
   alreadyCompleted: boolean;
+  pdfStartPage: number | null;
 };
 
 type Tab = "video" | "flashcards" | "quiz";
 
-export default function MishnayosClient({ mishnah, chapter, flashcards, questions, studentId, alreadyCompleted }: Props) {
+export default function MishnayosClient({ mishnah, chapter, flashcards, questions, studentId, alreadyCompleted, pdfStartPage }: Props) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("video");
 
@@ -153,6 +154,30 @@ export default function MishnayosClient({ mishnah, chapter, flashcards, question
             <div className="bg-blue-50 border border-blue-100 rounded-xl p-6">
               <h3 className="text-sm font-medium text-blue-800 mb-2">Summary</h3>
               <p className="text-gray-700">{mishnah.englishSummary}</p>
+            </div>
+          )}
+
+          {pdfStartPage && (
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-gray-700">📄 Mishnah Text — Illustrated Sefer</h3>
+                <a
+                  href={`/brachos.pdf#page=${pdfStartPage}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-blue-600 hover:underline"
+                >
+                  Open in new tab ↗
+                </a>
+              </div>
+              <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-100" style={{ height: "680px" }}>
+                <iframe
+                  src={`/brachos.pdf#page=${pdfStartPage}&toolbar=0&navpanes=0&scrollbar=1`}
+                  title={`Mishnah text — Perek ${chapter.number} Mishnah ${mishnah.number}`}
+                  className="w-full h-full"
+                  style={{ border: "none" }}
+                />
+              </div>
             </div>
           )}
 

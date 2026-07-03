@@ -6,12 +6,12 @@ type Mishnah = {
   mishnah: {
     id: number; chapterId: number; number: number; title: string;
     hebrewText: string | null; englishSummary: string | null;
-    youtubeVideoId: string | null; order: number;
+    youtubeVideoId: string | null; pdfStartPage: number | null; order: number;
   };
   chapter: Chapter | null;
 };
 
-const emptyForm = { chapterId: "", number: "", title: "", hebrewText: "", englishSummary: "", youtubeVideoId: "", order: "" };
+const emptyForm = { chapterId: "", number: "", title: "", hebrewText: "", englishSummary: "", youtubeVideoId: "", pdfStartPage: "", order: "" };
 
 export default function MishnayosAdmin() {
   const [rows, setRows] = useState<Mishnah[]>([]);
@@ -46,6 +46,7 @@ export default function MishnayosAdmin() {
       hebrewText: row.mishnah.hebrewText || "",
       englishSummary: row.mishnah.englishSummary || "",
       youtubeVideoId: row.mishnah.youtubeVideoId || "",
+      pdfStartPage: row.mishnah.pdfStartPage != null ? String(row.mishnah.pdfStartPage) : "",
       order: String(row.mishnah.order),
     });
   }
@@ -59,6 +60,7 @@ export default function MishnayosAdmin() {
       hebrewText: form.hebrewText || null,
       englishSummary: form.englishSummary || null,
       youtubeVideoId: form.youtubeVideoId || null,
+      pdfStartPage: form.pdfStartPage ? parseInt(form.pdfStartPage) : null,
       order: parseInt(form.order),
       ...(editing !== null ? { id: editing } : {}),
     };
@@ -133,11 +135,18 @@ export default function MishnayosAdmin() {
                 onChange={(e) => setForm((f) => ({ ...f, order: e.target.value }))}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
-            <div className="col-span-2">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">YouTube Video ID</label>
               <input type="text" value={form.youtubeVideoId}
                 onChange={(e) => setForm((f) => ({ ...f, youtubeVideoId: e.target.value }))}
-                placeholder="e.g. dQw4w9WgXcQ (the part after ?v=)"
+                placeholder="e.g. dQw4w9WgXcQ (part after ?v=)"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">PDF Start Page</label>
+              <input type="number" min={1} value={form.pdfStartPage}
+                onChange={(e) => setForm((f) => ({ ...f, pdfStartPage: e.target.value }))}
+                placeholder="e.g. 10"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div className="col-span-2">
@@ -182,6 +191,7 @@ export default function MishnayosAdmin() {
               <th className="text-left px-4 py-3 font-medium text-gray-600">Mishnah</th>
               <th className="text-left px-4 py-3 font-medium text-gray-600">Title</th>
               <th className="text-left px-4 py-3 font-medium text-gray-600">Video</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-600">PDF Page</th>
               <th className="px-4 py-3"></th>
             </tr>
           </thead>
@@ -194,6 +204,11 @@ export default function MishnayosAdmin() {
                 <td className="px-4 py-3">
                   {row.mishnah.youtubeVideoId
                     ? <span className="text-green-600 font-medium">✓ Set</span>
+                    : <span className="text-red-400">— Missing</span>}
+                </td>
+                <td className="px-4 py-3 font-variant-numeric tabular-nums text-sm">
+                  {row.mishnah.pdfStartPage != null
+                    ? <span className="text-green-600 font-medium">p. {row.mishnah.pdfStartPage}</span>
                     : <span className="text-red-400">— Missing</span>}
                 </td>
                 <td className="px-4 py-3 flex gap-2 justify-end">

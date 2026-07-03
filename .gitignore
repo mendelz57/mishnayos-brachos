@@ -45,3 +45,6 @@ next-env.d.ts
 
 # Keep example env
 !.env.example
+
+# PDF sefer (too large for git — copy manually to public/)
+public/brachos.pdf

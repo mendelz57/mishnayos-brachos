@@ -44,6 +44,7 @@ export default async function MishnayosPage({ params }: { params: Promise<{ id: 
       questions={questionsWithData}
       studentId={studentId}
       alreadyCompleted={progress?.completed ?? false}
+      pdfStartPage={mishnah.pdfStartPage ?? null}
     />
   );
 }
