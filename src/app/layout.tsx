@@ -8,6 +8,7 @@ const geist = Geist({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Mishnayos Brachos",
   description: "Learn Mishnayos Brachos with videos, flashcards, and quizzes",
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -44,6 +44,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 {l.label}
               </Link>
             ))}
+            <Link href="/donate" className="text-yellow-300 hover:text-yellow-100 text-sm font-semibold transition">
+              ❤️ Donate
+            </Link>
           </div>
         </div>
         <div className="flex items-center gap-4">

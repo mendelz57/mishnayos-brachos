@@ -61,6 +61,7 @@ export const mishnayos = pgTable("mishnayos", {
   englishSummary: text("english_summary"),
   youtubeVideoId: text("youtube_video_id"),
   pdfStartPage: integer("pdf_start_page"),
+  pdfEndPage: integer("pdf_end_page"),
   order: integer("order").notNull(),
 });
 
@@ -129,3 +130,16 @@ export const passwordResets = pgTable("password_resets", {
   expiresAt: timestamp("expires_at").notNull(),
   usedAt: timestamp("used_at"),
 });
+
+export const donations = pgTable("donations", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  dedication: text("dedication"),
+  amount: real("amount").notNull(),
+  isMonthly: boolean("is_monthly").notNull().default(false),
+  transactionId: text("transaction_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+// pdfEndPage added to mishnayos — run db:push after this change

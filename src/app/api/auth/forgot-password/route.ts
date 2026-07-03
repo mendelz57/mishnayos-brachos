@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
   const resend = new Resend(process.env.RESEND_API_KEY);
   await resend.emails.send({
-    from: "Mishnayos Brachos <noreply@chabadsola.com>",
+    from: "Mishnayos Brachos <onboarding@resend.dev>",
     to: email,
     subject: "Reset your password — Mishnayos Brachos",
     html: `

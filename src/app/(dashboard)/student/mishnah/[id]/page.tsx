@@ -22,7 +22,6 @@ export default async function MishnayosPage({ params }: { params: Promise<{ id: 
     .from(studentProgress)
     .where(and(eq(studentProgress.studentId, studentId), eq(studentProgress.mishnayosId, mishnayosId)));
 
-  if (!progress?.unlocked) redirect("/student");
 
   const [chapter] = await db.select().from(chapters).where(eq(chapters.id, mishnah.chapterId));
   const cards = await db.select().from(flashcards).where(eq(flashcards.mishnayosId, mishnayosId)).orderBy(flashcards.order);

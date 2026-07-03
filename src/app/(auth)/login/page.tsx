@@ -78,6 +78,11 @@ export default function LoginPage() {
             Register
           </Link>
         </p>
+        <div className="mt-4 pt-4 border-t text-center">
+          <Link href="/donate" className="text-sm text-yellow-600 font-semibold hover:underline">
+            ❤️ Support this project — Donate
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ export default async function StudentDashboard() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900 mb-2">My Learning</h1>
-      <p className="text-gray-500 mb-6">Complete each mishnah to unlock the next one.</p>
+      <p className="text-gray-500 mb-6">Select any mishnah to start learning.</p>
 
       <div className="space-y-6">
         {allChapters.map((chapter) => {
@@ -48,31 +48,24 @@ export default async function StudentDashboard() {
               <div className="divide-y divide-gray-50">
                 {chapterMishnayos.map((m) => {
                   const p = progressMap.get(m.id);
-                  const unlocked = p?.unlocked ?? false;
                   const completed = p?.completed ?? false;
 
                   return (
                     <div key={m.id} className="px-6 py-3 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <span className={`w-7 h-7 rounded-full flex items-center justify-center text-sm font-medium ${
-                          completed ? "bg-green-100 text-green-700" :
-                          unlocked ? "bg-blue-100 text-blue-700" :
-                          "bg-gray-100 text-gray-400"
+                          completed ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
                         }`}>
                           {completed ? "✓" : m.number}
                         </span>
-                        <span className={`font-medium ${unlocked ? "text-gray-900" : "text-gray-400"}`}>
+                        <span className="font-medium text-gray-900">
                           Mishnah {m.number} — {m.title}
                         </span>
                       </div>
-                      {unlocked ? (
-                        <Link href={`/student/mishnah/${m.id}`}
-                          className="text-sm bg-blue-700 text-white px-4 py-1.5 rounded-lg hover:bg-blue-800 transition font-medium">
-                          {completed ? "Review" : "Study"}
-                        </Link>
-                      ) : (
-                        <span className="text-gray-400 text-sm">🔒 Locked</span>
-                      )}
+                      <Link href={`/student/mishnah/${m.id}`}
+                        className="text-sm bg-blue-700 text-white px-4 py-1.5 rounded-lg hover:bg-blue-800 transition font-medium">
+                        {completed ? "Review" : "Study"}
+                      </Link>
                     </div>
                   );
                 })}

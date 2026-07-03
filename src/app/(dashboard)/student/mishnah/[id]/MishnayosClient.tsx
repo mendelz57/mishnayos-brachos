@@ -110,18 +110,32 @@ export default function MishnayosClient({ mishnah, chapter, flashcards, question
       {tab === "video" && (
         <div className="space-y-6">
           {mishnah.youtubeVideoId ? (
-            <div className="aspect-video rounded-xl overflow-hidden shadow-md">
-              <iframe
-                src={`https://www.youtube.com/embed/${mishnah.youtubeVideoId}`}
-                title={mishnah.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              />
+            <div className="space-y-2">
+              <div className="rounded-xl overflow-hidden shadow-md bg-gray-100" style={{ height: "480px" }}>
+                <iframe
+                  src={`https://www.chabad.org/multimedia/video_cdo/aid/${mishnah.youtubeVideoId}/jewish/video.htm`}
+                  title={mishnah.title}
+                  allowFullScreen
+                  className="w-full h-full"
+                  style={{ border: "none" }}
+                />
+              </div>
+              <div className="text-center">
+                <a
+                  href={`https://www.chabad.org/multimedia/video_cdo/aid/${mishnah.youtubeVideoId}/jewish/Brachos.htm`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  Watch on Chabad.org ↗
+                </a>
+              </div>
             </div>
           ) : (
-            <div className="aspect-video rounded-xl bg-gray-100 flex items-center justify-center text-gray-400">
-              No video uploaded yet
+            <div className="aspect-video rounded-xl bg-gray-100 flex flex-col items-center justify-center gap-2">
+              <div className="text-4xl">🎬</div>
+              <p className="text-gray-500 font-medium">Video coming soon</p>
+              <p className="text-gray-400 text-sm">Check back later!</p>
             </div>
           )}
 
@@ -146,7 +160,7 @@ export default function MishnayosClient({ mishnah, chapter, flashcards, question
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-sm font-semibold text-gray-700">📄 Mishnah Text — Illustrated Sefer</h3>
                 <a
-                  href={`/brachos.pdf#page=${pdfStartPage}`}
+                  href={`/api/pdf/${mishnah.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-blue-600 hover:underline"
@@ -156,7 +170,7 @@ export default function MishnayosClient({ mishnah, chapter, flashcards, question
               </div>
               <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-100" style={{ height: "680px" }}>
                 <iframe
-                  src={`/brachos.pdf#page=${pdfStartPage}&toolbar=0&navpanes=0&scrollbar=1`}
+                  src={`/api/pdf/${mishnah.id}`}
                   title={`Mishnah text — Perek ${chapter.number} Mishnah ${mishnah.number}`}
                   className="w-full h-full"
                   style={{ border: "none" }}

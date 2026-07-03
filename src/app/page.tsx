@@ -18,7 +18,7 @@ export default async function Home() {
         <p className="text-gray-600 mb-8">
           Learn Mishnayos Brachos with videos, flashcards, and quizzes — taught by Rabbi Mendel Zajac.
         </p>
-        <div className="flex gap-4 justify-center">
+        <div className="flex gap-4 justify-center flex-wrap">
           <Link
             href="/login"
             className="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800 transition"
@@ -30,6 +30,12 @@ export default async function Home() {
             className="border border-blue-700 text-blue-700 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition"
           >
             Register
+          </Link>
+          <Link
+            href="/donate"
+            className="bg-yellow-400 text-yellow-900 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-500 transition"
+          >
+            ❤️ Donate
           </Link>
         </div>
       </div>
