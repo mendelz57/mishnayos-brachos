@@ -9,8 +9,7 @@ type Mishnah = {
 type Chapter = { id: number; number: number; title: string };
 type Flashcard = { id: number; front: string; back: string };
 type Option = { id: number; text: string; isCorrect: boolean };
-type Pair = { id: number; leftText: string; rightText: string };
-type Question = { id: number; type: string; questionText: string; options: Option[]; pairs: Pair[] };
+type Question = { id: number; type: string; questionText: string; options: Option[]; pairs: { id: number; leftText: string; rightText: string }[] };
 
 type Props = {
   mishnah: Mishnah;
@@ -34,7 +33,6 @@ export default function MishnayosClient({ mishnah, chapter, flashcards, question
 
   // Quiz state
   const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [matchSelections, setMatchSelections] = useState<Record<number, Record<string, string>>>({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -45,23 +43,9 @@ export default function MishnayosClient({ mishnah, chapter, flashcards, question
     const answerPayload: { questionId: number; answer: string; isCorrect: boolean }[] = [];
 
     questions.forEach((q) => {
-      let isCorrect = false;
-      let studentAnswer = "";
-
-      if (q.type === "multiple_choice") {
-        studentAnswer = answers[q.id] || "";
-        const correctOpt = q.options.find((o) => o.isCorrect);
-        isCorrect = studentAnswer === String(correctOpt?.id);
-      } else if (q.type === "fill_blank") {
-        studentAnswer = answers[q.id] || "";
-        const correctOpt = q.options.find((o) => o.isCorrect);
-        isCorrect = studentAnswer.trim().toLowerCase() === correctOpt?.text.trim().toLowerCase();
-      } else if (q.type === "matching") {
-        const sel = matchSelections[q.id] || {};
-        isCorrect = q.pairs.every((p) => sel[String(p.id)] === p.rightText);
-        studentAnswer = JSON.stringify(sel);
-      }
-
+      const studentAnswer = answers[q.id] || "";
+      const correctOpt = q.options.find((o) => o.isCorrect);
+      const isCorrect = studentAnswer === String(correctOpt?.id);
       if (isCorrect) correct++;
       answerPayload.push({ questionId: q.id, answer: studentAnswer, isCorrect });
     });
@@ -258,7 +242,7 @@ export default function MishnayosClient({ mishnah, chapter, flashcards, question
               {score >= 70 ? (
                 <p className="text-green-700 font-medium">Next mishnah unlocked! Redirecting...</p>
               ) : (
-                <button onClick={() => { setSubmitted(false); setAnswers({}); setMatchSelections({}); }}
+                <button onClick={() => { setSubmitted(false); setAnswers({}); }}
                   className="bg-blue-700 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-800 transition">
                   Try Again
                 </button>
@@ -270,52 +254,20 @@ export default function MishnayosClient({ mishnah, chapter, flashcards, question
                 <div key={q.id} className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
                   <p className="font-medium text-gray-900 mb-4">{qi + 1}. {q.questionText}</p>
 
-                  {q.type === "multiple_choice" && (
-                    <div className="space-y-2">
-                      {q.options.map((opt) => (
-                        <label key={opt.id}
-                          className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition ${
-                            answers[q.id] === String(opt.id) ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:bg-gray-50"
-                          }`}>
-                          <input type="radio" name={`q${q.id}`} value={String(opt.id)}
-                            checked={answers[q.id] === String(opt.id)}
-                            onChange={(e) => setAnswers((a) => ({ ...a, [q.id]: e.target.value }))}
-                            className="text-blue-700" />
-                          <span>{opt.text}</span>
-                        </label>
-                      ))}
-                    </div>
-                  )}
-
-                  {q.type === "fill_blank" && (
-                    <input type="text" value={answers[q.id] || ""}
-                      onChange={(e) => setAnswers((a) => ({ ...a, [q.id]: e.target.value }))}
-                      placeholder="Type your answer..."
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                  )}
-
-                  {q.type === "matching" && (
-                    <div className="space-y-2">
-                      {q.pairs.map((p) => (
-                        <div key={p.id} className="flex items-center gap-3">
-                          <span className="w-40 text-sm font-medium text-gray-700 shrink-0">{p.leftText}</span>
-                          <span className="text-gray-400">→</span>
-                          <select
-                            value={matchSelections[q.id]?.[String(p.id)] || ""}
-                            onChange={(e) => setMatchSelections((m) => ({
-                              ...m,
-                              [q.id]: { ...(m[q.id] || {}), [String(p.id)]: e.target.value }
-                            }))}
-                            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="">Select match...</option>
-                            {[...q.pairs].sort(() => Math.random() - 0.5).map((pair) => (
-                              <option key={pair.id} value={pair.rightText}>{pair.rightText}</option>
-                            ))}
-                          </select>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <div className="space-y-2">
+                    {q.options.map((opt) => (
+                      <label key={opt.id}
+                        className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition ${
+                          answers[q.id] === String(opt.id) ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:bg-gray-50"
+                        }`}>
+                        <input type="radio" name={`q${q.id}`} value={String(opt.id)}
+                          checked={answers[q.id] === String(opt.id)}
+                          onChange={(e) => setAnswers((a) => ({ ...a, [q.id]: e.target.value }))}
+                          className="text-blue-700" />
+                        <span>{opt.text}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
               ))}
 

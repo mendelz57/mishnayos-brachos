@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 type Chapter = { id: number; number: number; title: string };
 type MishnayosRow = { mishnah: { id: number; number: number; title: string; chapterId: number }; chapter: Chapter | null };
 type Option = { text: string; isCorrect: boolean };
-type Pair = { leftText: string; rightText: string };
 type Question = {
   id: number; mishnayosId: number; type: string; questionText: string; order: number;
   options: { id: number; text: string; isCorrect: boolean }[];
@@ -22,7 +21,7 @@ export default function QuestionsAdmin() {
 
   const [form, setForm] = useState({
     mishnayosId: "",
-    type: "multiple_choice" as "multiple_choice" | "fill_blank" | "matching",
+    type: "multiple_choice" as "multiple_choice",
     questionText: "",
     order: "0",
   });
@@ -32,8 +31,6 @@ export default function QuestionsAdmin() {
     { text: "", isCorrect: false },
     { text: "", isCorrect: false },
   ]);
-  const [pairs, setPairs] = useState<Pair[]>([{ leftText: "", rightText: "" }]);
-  const [fillAnswer, setFillAnswer] = useState("");
 
   async function load() {
     const [c, m] = await Promise.all([
@@ -59,23 +56,16 @@ export default function QuestionsAdmin() {
 
   async function save() {
     setLoading(true);
-    let finalOptions: Option[] = [];
-    let finalPairs: Pair[] = [];
-
-    if (form.type === "multiple_choice") finalOptions = options;
-    if (form.type === "fill_blank") finalOptions = [{ text: fillAnswer, isCorrect: true }];
-    if (form.type === "matching") finalPairs = pairs;
-
     await fetch("/api/admin/questions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         mishnayosId: parseInt(form.mishnayosId),
-        type: form.type,
+        type: "multiple_choice",
         questionText: form.questionText,
         order: parseInt(form.order),
-        options: finalOptions,
-        pairs: finalPairs,
+        options,
+        pairs: [],
       }),
     });
 
@@ -138,15 +128,6 @@ export default function QuestionsAdmin() {
                 ))}
               </select>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Question Type</label>
-              <select value={form.type} onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as typeof form.type }))}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="multiple_choice">Multiple Choice</option>
-                <option value="fill_blank">Fill in the Blank</option>
-                <option value="matching">Matching</option>
-              </select>
-            </div>
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Question Text</label>
               <textarea value={form.questionText} rows={2}
@@ -155,49 +136,19 @@ export default function QuestionsAdmin() {
             </div>
           </div>
 
-          {form.type === "multiple_choice" && (
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Answer Options (check the correct one)</label>
-              {options.map((opt, i) => (
-                <div key={i} className="flex gap-2 items-center mb-2">
-                  <input type="radio" checked={opt.isCorrect} onChange={() =>
-                    setOptions(options.map((o, j) => ({ ...o, isCorrect: j === i })))}
-                    className="mt-1" />
-                  <input type="text" value={opt.text} placeholder={`Option ${i + 1}`}
-                    onChange={(e) => setOptions(options.map((o, j) => j === i ? { ...o, text: e.target.value } : o))}
-                    className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-              ))}
-            </div>
-          )}
-
-          {form.type === "fill_blank" && (
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Correct Answer</label>
-              <input type="text" value={fillAnswer} onChange={(e) => setFillAnswer(e.target.value)}
-                placeholder="The exact correct answer"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-          )}
-
-          {form.type === "matching" && (
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Matching Pairs</label>
-              {pairs.map((p, i) => (
-                <div key={i} className="flex gap-2 mb-2">
-                  <input type="text" value={p.leftText} placeholder="Left side"
-                    onChange={(e) => setPairs(pairs.map((pair, j) => j === i ? { ...pair, leftText: e.target.value } : pair))}
-                    className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                  <span className="self-center text-gray-400">↔</span>
-                  <input type="text" value={p.rightText} placeholder="Right side"
-                    onChange={(e) => setPairs(pairs.map((pair, j) => j === i ? { ...pair, rightText: e.target.value } : pair))}
-                    className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-              ))}
-              <button type="button" onClick={() => setPairs([...pairs, { leftText: "", rightText: "" }])}
-                className="text-blue-600 text-sm hover:underline">+ Add pair</button>
-            </div>
-          )}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Answer Options (check the correct one)</label>
+            {options.map((opt, i) => (
+              <div key={i} className="flex gap-2 items-center mb-2">
+                <input type="radio" checked={opt.isCorrect} onChange={() =>
+                  setOptions(options.map((o, j) => ({ ...o, isCorrect: j === i })))}
+                  className="mt-1" />
+                <input type="text" value={opt.text} placeholder={`Option ${i + 1}`}
+                  onChange={(e) => setOptions(options.map((o, j) => j === i ? { ...o, text: e.target.value } : o))}
+                  className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+            ))}
+          </div>
 
           <div className="flex gap-2">
             <button onClick={save} disabled={loading || !form.questionText || !form.mishnayosId}
