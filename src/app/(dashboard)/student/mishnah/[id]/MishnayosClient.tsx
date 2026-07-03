@@ -110,27 +110,24 @@ export default function MishnayosClient({ mishnah, chapter, flashcards, question
       {tab === "video" && (
         <div className="space-y-6">
           {mishnah.youtubeVideoId ? (
-            <div className="space-y-2">
-              <div className="rounded-xl overflow-hidden shadow-md bg-gray-100" style={{ height: "480px" }}>
-                <iframe
-                  src={`https://www.chabad.org/multimedia/video_cdo/aid/${mishnah.youtubeVideoId}/jewish/video.htm`}
-                  title={mishnah.title}
-                  allowFullScreen
-                  className="w-full h-full"
-                  style={{ border: "none" }}
-                />
+            <a
+              href={`https://www.chabad.org/multimedia/video_cdo/aid/${mishnah.youtubeVideoId}/jewish/Brachos.htm`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block group"
+            >
+              <div className="aspect-video rounded-xl bg-gradient-to-br from-blue-900 to-blue-700 flex flex-col items-center justify-center gap-4 shadow-md cursor-pointer hover:from-blue-800 hover:to-blue-600 transition-all">
+                <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-all">
+                  <svg className="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+                <div className="text-center">
+                  <p className="text-white font-semibold text-lg">{mishnah.title}</p>
+                  <p className="text-blue-200 text-sm mt-1">Click to watch on Chabad.org ↗</p>
+                </div>
               </div>
-              <div className="text-center">
-                <a
-                  href={`https://www.chabad.org/multimedia/video_cdo/aid/${mishnah.youtubeVideoId}/jewish/Brachos.htm`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-blue-600 hover:underline"
-                >
-                  Watch on Chabad.org ↗
-                </a>
-              </div>
-            </div>
+            </a>
           ) : (
             <div className="aspect-video rounded-xl bg-gray-100 flex flex-col items-center justify-center gap-2">
               <div className="text-4xl">🎬</div>
